@@ -48,3 +48,69 @@ This is an example of how to list things you need to use the software and how to
 * [Expected API From XPX Server](https://documenter.getpostman.com/view/8088351/TWDcGFTL#7ff4980f-1a9b-4d25-ac49-0de9c68cabb7)- Document about expected API from XPX Server. Can be change for integerating in future
 
 
+# tsjs-eth-swap-server
+
+This application is generated using [LoopBack 4 CLI](https://loopback.io/doc/en/lb4/Command-line-interface.html) with the
+[initial project layout](https://loopback.io/doc/en/lb4/Loopback-application-layout.html).
+
+## Install dependencies
+
+By default, dependencies were installed when this application was generated.
+Whenever dependencies in `package.json` are changed, run the following command:
+
+```sh
+npm install
+```
+
+To only install resolved dependencies in `package-lock.json`:
+
+```sh
+npm ci
+```
+
+## Run the application
+
+```sh
+npm start
+```
+
+You can also run `node .` to skip the build step.
+
+## Rebuild the project
+
+To incrementally build the project:
+
+```sh
+npm run build
+```
+
+To force a full build by cleaning up cached artifacts:
+
+```sh
+npm run rebuild
+```
+
+## Fix code style and formatting issues
+
+```sh
+npm run lint
+```
+
+To automatically fix such issues:
+
+```sh
+npm run lint:fix
+```
+
+## Other useful commands
+
+- `npm run migrate`: Migrate database schemas for models
+- `npm run openapi-spec`: Generate OpenAPI spec into a file
+- `npm run docker:build`: Build a Docker image for this application
+- `npm run docker:run`: Run this application inside a Docker container
+
+## Tests
+
+```sh
+npm test
+```
