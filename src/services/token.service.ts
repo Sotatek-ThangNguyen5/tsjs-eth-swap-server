@@ -5,7 +5,7 @@ import {ConnectionService} from './connection.service';
 
 @injectable({scope: BindingScope.TRANSIENT})
 export class TokenService {
-  private tokenAddress: string = process.env.WXPX_ADDRESS || '';
+  private tokenAddress: string = process.env.WXPX_ADDRESS ?? '';
   private tokenAbi: Interface;
   private tokenContract: Contract;
 

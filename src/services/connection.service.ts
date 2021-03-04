@@ -7,8 +7,8 @@ import {Interface} from 'ethers/lib/utils';
 export class ConnectionService {
   private network = process.env.NETWORK ?? 'homestead';
   private infuraProvider = process.env.INFURA_ENDPOINTS;
-  private infuraWebSocketProvider = process.env.INFURA_WSS_ENDPOINTS || '';
-  private fundingAccountPrivateKey = process.env.FUNDING_ACCOUNT_PK || '';
+  private infuraWebSocketProvider = process.env.INFURA_WSS_ENDPOINTS ?? '';
+  private fundingAccountPrivateKey = process.env.FUNDING_ACCOUNT_PK ?? '';
 
   private provider: JsonRpcProvider;
   private websocketProvider: WebSocketProvider;
