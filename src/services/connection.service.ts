@@ -1,10 +1,48 @@
-import {injectable, /* inject, */ BindingScope} from '@loopback/core';
+import {JsonRpcProvider, WebSocketProvider} from '@ethersproject/providers';
+import {/* inject, */ BindingScope, injectable} from '@loopback/core';
+import {ethers, Wallet} from 'ethers';
 
 @injectable({scope: BindingScope.TRANSIENT})
 export class ConnectionService {
-  constructor(/* Add @inject to inject parameters */) {}
+  private network = process.env.NETWORK ?? 'homestead';
+  private infuraProvider = process.env.INFURA_ENDPOINTS;
+  private infuraWebSocketProvider = process.env.INFURA_WSS_ENDPOINTS || '';
+  private fundingAccountPrivateKey = process.env.FUNDING_ACCOUNT_PK || '';
 
-  /*
-   * Add service methods here
-   */
+  private provider: JsonRpcProvider;
+  private websocketProvider: WebSocketProvider;
+  private wallet: Wallet;
+
+  constructor() {
+    // Assign https provider
+    this.provider = new ethers.providers.JsonRpcProvider(
+      this.infuraProvider,
+      this.network,
+    );
+    // Assign websocket providers
+    this.websocketProvider = new ethers.providers.WebSocketProvider(
+      this.infuraWebSocketProvider,
+      this.network,
+    );
+    // Assign wallet
+    this.wallet = new ethers.Wallet(this.fundingAccountPrivateKey);
+  }
+  // Get provider that initialized from constructor
+  getProvider = () => {
+    return this.provider;
+  };
+  // Get private Websocket providers that initialized from constructor
+  getWssProvider = () => {
+    return this.websocketProvider;
+  };
+  // Get private Signer for signature
+  // and recover from signature
+  getSigner = () => {
+    return this.provider.getSigner();
+  };
+  // Get private wallet
+  // use for transfer ETH
+  getWallet = () => {
+    return this.wallet;
+  };
 }

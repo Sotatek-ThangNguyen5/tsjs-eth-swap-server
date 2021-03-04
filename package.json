@@ -56,6 +56,7 @@
     "@loopback/rest-explorer": "^3.1.0",
     "@loopback/service-proxy": "^3.0.7",
     "dotenv": "^8.2.0",
+    "ethers": "^5.0.31",
     "tslib": "^2.0.0"
   },
   "devDependencies": {
