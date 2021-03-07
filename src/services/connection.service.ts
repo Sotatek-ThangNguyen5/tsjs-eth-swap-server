@@ -1,7 +1,6 @@
 import {JsonRpcProvider, WebSocketProvider} from '@ethersproject/providers';
 import {BindingScope, injectable} from '@loopback/core';
-import {Contract, ethers, Wallet} from 'ethers';
-import {Interface} from 'ethers/lib/utils';
+import {Contract, ContractInterface, ethers, Wallet} from 'ethers';
 
 @injectable({scope: BindingScope.TRANSIENT})
 export class ConnectionService {
@@ -48,7 +47,7 @@ export class ConnectionService {
   };
   // Connect to contract
   // using contract's address and it's abi
-  connectContract = (address: string, abi: Interface) => {
+  connectContract = (address: string, abi: ContractInterface) => {
     return new Contract(address, abi, this.provider);
   };
 }
