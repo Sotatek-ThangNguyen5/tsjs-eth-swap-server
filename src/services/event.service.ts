@@ -1,25 +1,21 @@
-import {WebSocketProvider} from '@ethersproject/providers';
+/* eslint-disable @typescript-eslint/no-floating-promises */
 import {BindingScope, injectable, service} from '@loopback/core';
 import {EventFilter, utils} from 'ethers';
+import {Swap, Type} from '../models';
 import {ConnectionService} from './connection.service';
+import {SwapService} from './swap.service';
 import {TokenService} from './token.service';
 
 @injectable({scope: BindingScope.TRANSIENT})
 export class Events {
-  // Private websocket Provider
-  private websocketProvider: WebSocketProvider;
+  @service() private swapService: SwapService;
   // Create static instance
   private static instance: Events;
   // Property that describe status of websocket
   // prevent double events on one chanel
   private isListening = false;
   // Constructor for event services
-  constructor(
-    @service() private connectionService: ConnectionService,
-    @service() private tokenService: TokenService,
-  ) {
-    this.websocketProvider = connectionService.getWssProvider();
-  }
+  constructor(@service() private tokenService: TokenService) {}
 
   public static getInstance(): Events {
     if (!Events.instance) {
@@ -27,17 +23,16 @@ export class Events {
       const connectionService = new ConnectionService();
       const tokenService = new TokenService(connectionService);
 
-      Events.instance = new Events(connectionService, tokenService);
+      Events.instance = new Events(tokenService);
     }
 
     return Events.instance;
   }
 
-  async onNewSwapFromWxpx() {
+  async newSwap() {
     if (!this.isListening) {
       const tokenContract = this.tokenService.getTokenContract();
       const depositAddress = this.tokenService.getDepositAddress();
-      const provider = this.connectionService.getProvider();
 
       const filter: EventFilter = {
         address: tokenContract.address,
@@ -45,22 +40,25 @@ export class Events {
       };
 
       tokenContract.on(filter, (from, to, value, transactionDetail) => {
-        console.log({from, to, value, transactionDetail});
-        // Implement a swap here
+        if (to !== depositAddress) {
+          // Implement logger here
+        } else {
+          const newSwapRecord = new Swap({
+            txid: transactionDetail.transactionHash,
+            blockNumber: transactionDetail.blockNumber,
+            from,
+            to,
+            value,
+            type: Type.WXPX,
+          });
 
-        // Check if to address == deposit address
-
-        // Check value of a swap
-
-        // Validate from
-
-        // Create record for swap
+          this.swapService.createRecord(newSwapRecord);
+        }
       });
-
-      console.log('RUN');
       this.isListening = true;
     } else {
-      console.log('Not RUN');
+      console.log("Duplicate event won't run");
+      return;
     }
   }
 }
