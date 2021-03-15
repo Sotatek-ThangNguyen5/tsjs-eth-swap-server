@@ -18,10 +18,18 @@ export class TokenService {
 
   // Return the token address
   async getTokenAddress() {
+    if (!this.tokenContract.address) {
+      throw new Error(
+        `TokenService::Empty Token Contract address. Value: ${this.tokenContract.address}`,
+      );
+    }
     return this.tokenContract.address;
   }
   // Return the token ABI
   async getTokenAbi() {
+    if (!this.tokenAbi) {
+      throw new Error(`TokenService::Empty Token ABI. Value: ${this.tokenAbi}`);
+    }
     return this.tokenAbi;
   }
 
@@ -32,7 +40,13 @@ export class TokenService {
 
   // Get token deposit address
   getDepositAddress() {
-    return process.env.DEPOSIT_ACCOUNT_ADDRESS ?? '';
+    const depositAddress = process.env.DEPOSIT_ACCOUNT_ADDRESS;
+    if (!depositAddress) {
+      throw new Error(
+        `TokenService::Empty deposit address. Value: ${depositAddress}`,
+      );
+    }
+    return depositAddress;
   }
 
   // Return the token contract

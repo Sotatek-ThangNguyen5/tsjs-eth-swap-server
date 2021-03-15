@@ -40,9 +40,11 @@ export class Events {
             value,
             type: Type.WXPX,
           });
+
           this.swapService.createRecord(newSwapRecord);
         }
       });
+
       this.isListening = true;
     } else {
       console.log("Duplicate event won't run");

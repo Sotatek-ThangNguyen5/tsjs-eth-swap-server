@@ -53,6 +53,11 @@ export class Swap extends Entity {
     required: true,
   })
   type: Type;
+  @property({
+    type: 'date',
+    default: () => new Date(),
+  })
+  createdAt?: Date;
 
   constructor(data?: Partial<Swap>) {
     super(data);
