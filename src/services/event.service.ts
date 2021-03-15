@@ -2,32 +2,21 @@
 import {BindingScope, injectable, service} from '@loopback/core';
 import {EventFilter, utils} from 'ethers';
 import {Swap, Type} from '../models';
-import {ConnectionService} from './connection.service';
 import {SwapService} from './swap.service';
 import {TokenService} from './token.service';
 
-@injectable({scope: BindingScope.TRANSIENT})
+@injectable({scope: BindingScope.SINGLETON})
 export class Events {
-  @service() private swapService: SwapService;
   // Create static instance
   private static instance: Events;
   // Property that describe status of websocket
   // prevent double events on one chanel
   private isListening = false;
   // Constructor for event services
-  constructor(@service() private tokenService: TokenService) {}
-
-  public static getInstance(): Events {
-    if (!Events.instance) {
-      // Get instance of
-      const connectionService = new ConnectionService();
-      const tokenService = new TokenService(connectionService);
-
-      Events.instance = new Events(tokenService);
-    }
-
-    return Events.instance;
-  }
+  constructor(
+    @service() private tokenService: TokenService,
+    @service() private swapService: SwapService,
+  ) {}
 
   async newSwap() {
     if (!this.isListening) {
@@ -51,7 +40,6 @@ export class Events {
             value,
             type: Type.WXPX,
           });
-
           this.swapService.createRecord(newSwapRecord);
         }
       });
