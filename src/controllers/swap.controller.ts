@@ -10,11 +10,7 @@ export class SwapController {
 
   @service() private connectionService: ConnectionService;
 
-  private eventService: Events;
-
-  constructor() {
-    this.eventService = Events.getInstance();
-  }
+  constructor(@service() private eventService: Events) {}
 
   @get('/start-swap-server')
   @response(200)
