@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import {BindingScope, injectable, service} from '@loopback/core';
+import {$log} from '@tsed/logger';
 import {EventFilter, utils} from 'ethers';
 import {Swap, Type} from '../models';
 import {SwapService} from './swap.service';
@@ -20,6 +21,9 @@ export class Events {
 
   async newSwap() {
     if (!this.isListening) {
+      $log.info(
+        `Events: swap server started at: ${new Date().toLocaleString()}`,
+      );
       const tokenContract = this.tokenService.getTokenContract();
       const depositAddress = this.tokenService.getDepositAddress();
 
@@ -32,6 +36,9 @@ export class Events {
         if (to !== depositAddress) {
           // Implement logger here
         } else {
+          $log.info(
+            `Events: new swap are detected. From: ${from}, value: ${value}`,
+          );
           const newSwapRecord = new Swap({
             txid: transactionDetail.transactionHash,
             blockNumber: transactionDetail.blockNumber,
@@ -42,13 +49,16 @@ export class Events {
           });
 
           this.swapService.createRecord(newSwapRecord);
+
+          $log.info(
+            `Events: Created swap record. Record ID: ${newSwapRecord._id}`,
+          );
         }
       });
 
       this.isListening = true;
     } else {
-      console.log("Duplicate event won't run");
-      return;
+      $log.error(`Events: Duplicate events are not authorized for running}`);
     }
   }
 }
