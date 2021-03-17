@@ -7,4 +7,6 @@ export class VerifierService {
   verifyMessage(message: Bytes, signature: BytesLike) {
     return utils.verifyMessage(message, signature);
   }
+
+  
 }

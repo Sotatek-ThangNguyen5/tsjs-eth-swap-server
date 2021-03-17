@@ -2,7 +2,14 @@
 // Uncomment these imports to begin using these cool features!
 
 import {inject, service} from '@loopback/core';
-import {get, post, Request, response, RestBindings} from '@loopback/rest';
+import {
+  get,
+  post,
+  Request,
+  requestBody,
+  response,
+  RestBindings,
+} from '@loopback/rest';
 import {ConnectionService, Events} from '../services';
 
 export class SwapController {
@@ -25,5 +32,7 @@ export class SwapController {
 
   @post('/verify-message')
   @response(200)
-  verifyMessage() {}
+  verifyMessage(@requestBody() body: any) {
+    const {message: string, hash: BytesLike} = body.message;
+  }
 }

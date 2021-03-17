@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import {BindingScope, injectable, service} from '@loopback/core';
 import {Logger} from '@tsed/logger';
@@ -43,13 +44,12 @@ export class Events {
         topics: [utils.id('Transfer(address,address,uint256)')],
       };
 
-      tokenContract.on(filter, (from, to, value, transactionDetail) => {
-        if (to !== depositAddress) {
-          // Implement logger here
-        } else {
+      tokenContract.on(filter, async (from, to, value, transactionDetail) => {
+        if (to === depositAddress) {
           this.logger.info(
             `Events: new swap are detected. From: ${from}, value: ${value}`,
           );
+
           const newSwapRecord = new Swap({
             txid: transactionDetail.transactionHash,
             blockNumber: transactionDetail.blockNumber,
@@ -57,20 +57,20 @@ export class Events {
             to,
             value,
             type: Type.WXPX,
+            createdAt: new Date(Date.now()),
           });
 
           this.swapService.createRecord(newSwapRecord);
 
           this.logger.info(
-            `Events: Created swap record. Record ID: ${newSwapRecord._id}`,
+            `Events: Created swap record for ${newSwapRecord.txid}`,
           );
         }
       });
-
       this.isListening = true;
     } else {
       this.logger.error(
-        `Events: Duplicate events are not authorized for running}`,
+        `Events: Duplicate events are not authorized for running`,
       );
     }
   }
