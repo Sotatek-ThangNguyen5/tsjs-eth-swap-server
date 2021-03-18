@@ -25,7 +25,10 @@ export class ConnectionService {
       this.network,
     );
     // Assign wallet
-    this.wallet = new ethers.Wallet(this.fundingAccountPrivateKey);
+    this.wallet = new ethers.Wallet(
+      this.fundingAccountPrivateKey,
+      this.provider,
+    );
   }
   // Get provider that initialized from constructor
   getProvider = () => {
@@ -48,6 +51,6 @@ export class ConnectionService {
   // Connect to contract
   // using contract's address and it's abi
   connectContract = (address: string, abi: ContractInterface) => {
-    return new Contract(address, abi, this.provider);
+    return new Contract(address, abi, this.wallet);
   };
 }
