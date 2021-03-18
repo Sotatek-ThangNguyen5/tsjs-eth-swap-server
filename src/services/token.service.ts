@@ -53,4 +53,10 @@ export class TokenService {
   getTokenContract() {
     return this.tokenContract;
   }
+
+  // Transfer WXPX
+  async transferWxpx(to: string, value: number) {
+    const transferResponse = await this.tokenContract.transfer(to, value);
+    return transferResponse;
+  }
 }

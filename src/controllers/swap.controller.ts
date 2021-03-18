@@ -12,12 +12,21 @@ import {
   response,
   RestBindings,
 } from '@loopback/rest';
-import {ConnectionService, Events, VerifierService} from '../services';
+import {
+  ConnectionService,
+  Events,
+  TokenService,
+  VerifierService,
+} from '../services';
 
 export interface VerifyMessage {
   address: string;
   messageSignature: BytesLike;
   originMessage: string;
+}
+export interface TransferData {
+  address: string;
+  value: number;
 }
 
 export class SwapController {
@@ -29,6 +38,7 @@ export class SwapController {
   constructor(
     @service() private eventService: Events,
     @service() private verifierService: VerifierService,
+    @service() private tokenService: TokenService,
   ) {}
 
   @get('/start-swap-server')
@@ -59,7 +69,30 @@ export class SwapController {
 
       return this.res.status(200).send({
         status: true,
-        message: `${verifyMessage.address} did sign the message: ${verifyMessage.originMessage}`,
+        data: `${verifyMessage.address} did sign the message: ${verifyMessage.originMessage}`,
+      });
+    } catch (error) {
+      return this.res.status(401).send({
+        status: false,
+        message: error.message,
+      });
+    }
+  }
+
+  @post('/transfer-wxpx')
+  @response(200)
+  async transferWxpx(
+    @requestBody() transferData: TransferData,
+  ): Promise<Response> {
+    try {
+      const transferResponse = await this.tokenService.transferWxpx(
+        transferData.address,
+        transferData.value,
+      );
+
+      return this.res.status(200).send({
+        status: true,
+        data: transferResponse,
       });
     } catch (error) {
       return this.res.status(401).send({
