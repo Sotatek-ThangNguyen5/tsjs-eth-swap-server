@@ -14,7 +14,8 @@ export class Events {
   private logger;
   // Property that describe status of websocket
   // prevent double events on one chanel
-  private isListening = false;
+  private isListening: Boolean = false;
+  private status: Boolean = true;
   // Constructor for event services
   constructor(
     @service() private tokenService: TokenService,
@@ -32,6 +33,7 @@ export class Events {
   }
 
   async newSwap() {
+    this.status = true;
     if (!this.isListening) {
       this.logger.info(
         `Events: swap server started at: ${new Date().toLocaleString()}`,
@@ -45,26 +47,31 @@ export class Events {
       };
 
       tokenContract.on(filter, async (from, to, value, transactionDetail) => {
-        if (to === depositAddress) {
+        if (!this.status) {
           this.logger.info(
-            `Events: new swap are detected. From: ${from}, value: ${value}`,
+            `Events: New swap are detected but server are paused. From: ${from}, value: ${value}`,
           );
+        } else {
+          if (to === depositAddress) {
+            this.logger.info(
+              `Events: new swap are detected. From: ${from}, value: ${value}`,
+            );
+            const newSwapRecord = new Swap({
+              txid: transactionDetail.transactionHash,
+              blockNumber: transactionDetail.blockNumber,
+              from,
+              to,
+              value,
+              type: Type.WXPX,
+              createdAt: new Date(Date.now()),
+            });
 
-          const newSwapRecord = new Swap({
-            txid: transactionDetail.transactionHash,
-            blockNumber: transactionDetail.blockNumber,
-            from,
-            to,
-            value,
-            type: Type.WXPX,
-            createdAt: new Date(Date.now()),
-          });
+            this.swapService.createRecord(newSwapRecord);
 
-          this.swapService.createRecord(newSwapRecord);
-
-          this.logger.info(
-            `Events: Created swap record for ${newSwapRecord.txid}`,
-          );
+            this.logger.info(
+              `Events: Created swap record for ${newSwapRecord.txid}`,
+            );
+          }
         }
       });
       this.isListening = true;
@@ -73,5 +80,11 @@ export class Events {
         `Events: Duplicate events are not authorized for running`,
       );
     }
+  }
+
+  pauseServer() {
+    this.status = false;
+    this.logger.info(`Events: Swap Server Paused`);
+    return this.status;
   }
 }
