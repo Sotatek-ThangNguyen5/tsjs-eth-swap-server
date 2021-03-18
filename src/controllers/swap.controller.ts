@@ -43,9 +43,16 @@ export class SwapController {
 
   @get('/start-swap-server')
   @response(200)
-  async swap(): Promise<string> {
+  async startServer(): Promise<string> {
     this._startSwapServer();
-    return 'Server started';
+    return "Server's started";
+  }
+
+  @get('/pause-swap-server')
+  @response(200)
+  async pauseServer(): Promise<string> {
+    this.eventService.pauseServer();
+    return "Server's paused";
   }
 
   _startSwapServer() {
@@ -79,7 +86,7 @@ export class SwapController {
     }
   }
 
-  @post('/transfer-wxpx')
+  @post('/transfers')
   @response(200)
   async transferWxpx(
     @requestBody() transferData: TransferData,
@@ -95,7 +102,7 @@ export class SwapController {
         data: transferResponse,
       });
     } catch (error) {
-      return this.res.status(401).send({
+      return this.res.status(500).send({
         status: false,
         message: error.message,
       });
