@@ -12,4 +12,8 @@ export class SwapService {
   async createRecord(newSwap: Swap) {
     return this.swapRepository.create(newSwap);
   }
+
+  async findById(id: string) {
+    return this.swapRepository.findById(id);
+  }
 }
