@@ -10,13 +10,13 @@ import {
   requestBody,
   Response,
   response,
-  RestBindings,
+  RestBindings
 } from '@loopback/rest';
 import {
   ConnectionService,
   Events,
   TokenService,
-  VerifierService,
+  VerifierService
 } from '../services';
 
 export interface VerifyMessage {
@@ -43,16 +43,36 @@ export class SwapController {
 
   @get('/start-swap-server')
   @response(200)
-  async startServer(): Promise<string> {
-    this._startSwapServer();
-    return "Server's started";
+  async startServer(): Promise<Response> {
+    try {
+      this._startSwapServer();
+      return this.res.status(200).send({
+        status: true,
+        data: `Server is STARTED at. ${new Date().toLocaleString()}`,
+      });
+    } catch (error) {
+      return this.res.status(401).send({
+        status: false,
+        message: error.message,
+      });
+    }
   }
 
   @get('/pause-swap-server')
   @response(200)
-  async pauseServer(): Promise<string> {
-    this.eventService.pauseServer();
-    return "Server's paused";
+  async pauseServer(): Promise<Response> {
+    try {
+      this.eventService.pauseServer();
+      return this.res.status(200).send({
+        status: true,
+        data: `Server is PAUSED at. ${new Date().toLocaleString()}`,
+      });
+    } catch (error) {
+      return this.res.status(401).send({
+        status: false,
+        message: error.message,
+      });
+    }
   }
 
   _startSwapServer() {

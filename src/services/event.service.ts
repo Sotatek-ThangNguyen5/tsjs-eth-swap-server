@@ -83,6 +83,10 @@ export class Events {
   }
 
   pauseServer() {
+    if (!this.status) {
+      throw new Error('Server is not running');
+    }
+
     this.status = false;
     this.logger.info(`Events: Swap Server Paused`);
     return this.status;
