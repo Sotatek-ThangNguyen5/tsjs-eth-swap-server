@@ -47,6 +47,13 @@ a:active {
   cursor: pointer;
 }
 
+.web3-connect {
+  border: 1px solid black;
+  width: 70px;
+  overflow: auto;
+  white-space: nowrap;
+}
+
 @media (prefers-color-scheme: dark) {
   body {
     background-color: rgb(29, 30, 32);
