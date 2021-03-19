@@ -3,6 +3,7 @@
 
 import {BytesLike} from '@ethersproject/bytes';
 import {inject, service} from '@loopback/core';
+import {repository} from '@loopback/repository';
 import {
   get,
   post,
@@ -10,13 +11,14 @@ import {
   requestBody,
   Response,
   response,
-  RestBindings
+  RestBindings,
 } from '@loopback/rest';
+import {SwapRepository} from '../repositories';
 import {
   ConnectionService,
   Events,
   TokenService,
-  VerifierService
+  VerifierService,
 } from '../services';
 
 export interface VerifyMessage {
@@ -39,6 +41,7 @@ export class SwapController {
     @service() private eventService: Events,
     @service() private verifierService: VerifierService,
     @service() private tokenService: TokenService,
+    @repository(SwapRepository) public swapRepository: SwapRepository,
   ) {}
 
   @get('/start-swap-server')
@@ -81,7 +84,9 @@ export class SwapController {
 
   @post('/verify-message')
   @response(200)
-  verifyMessage(@requestBody() verifyMessage: VerifyMessage): Response {
+  async verifyMessage(
+    @requestBody() verifyMessage: VerifyMessage,
+  ): Promise<Response> {
     try {
       const recoveredAddress: string = this.verifierService.verifyMessage(
         verifyMessage.originMessage,
@@ -94,9 +99,22 @@ export class SwapController {
         throw new Error('Signer address different from derived address');
       }
 
+      const depositWxpxRecord = await this.swapRepository.findOne({
+        where: {from: recoveredAddress},
+      });
+
+      if (!depositWxpxRecord) {
+        throw new Error('Transfer WXPX record not found!');
+      }
+
+      const transaction = await this.tokenService.transferWxpx(
+        depositWxpxRecord.from,
+        depositWxpxRecord.value,
+      );
+
       return this.res.status(200).send({
         status: true,
-        data: `${verifyMessage.address} did sign the message: ${verifyMessage.originMessage}`,
+        data: `${transaction.hash}`,
       });
     } catch (error) {
       return this.res.status(401).send({
