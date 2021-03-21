@@ -13,6 +13,7 @@ import {
   response,
   RestBindings,
 } from '@loopback/rest';
+import {Status} from '../models';
 import {SwapRepository} from '../repositories';
 import {
   ConnectionService,
@@ -29,6 +30,7 @@ export interface VerifyMessage {
 export interface TransferData {
   address: string;
   value: number;
+  txid?: string;
 }
 
 export class SwapController {
@@ -92,6 +94,13 @@ export class SwapController {
         verifyMessage.originMessage,
         verifyMessage.messageSignature,
       );
+      const [transactionId, xpxAddress] = verifyMessage.originMessage.split(
+        '|',
+      );
+
+      if (!transactionId || !xpxAddress) {
+        throw new Error('Signed Message not valid');
+      }
 
       if (
         recoveredAddress.toLowerCase() !== verifyMessage.address.toLowerCase()
@@ -100,17 +109,26 @@ export class SwapController {
       }
 
       const depositWxpxRecord = await this.swapRepository.findOne({
-        where: {from: recoveredAddress},
+        where: {
+          from: recoveredAddress,
+          txid: transactionId,
+          status: Status.PENDING,
+        },
       });
 
       if (!depositWxpxRecord) {
-        throw new Error('Transfer WXPX record not found!');
+        throw new Error('Transfer WXPX record not found or fulfilled!');
       }
 
       const transaction = await this.tokenService.transferWxpx(
         depositWxpxRecord.from,
         depositWxpxRecord.value,
       );
+
+      await this.swapRepository.updateById(depositWxpxRecord._id, {
+        status: Status.FULFILLED,
+        fulfillTransaction: transaction.hash,
+      });
 
       return this.res.status(200).send({
         status: true,

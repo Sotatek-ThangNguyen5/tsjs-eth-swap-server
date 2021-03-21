@@ -3,7 +3,7 @@
 import {BindingScope, injectable, service} from '@loopback/core';
 import {Logger} from '@tsed/logger';
 import {EventFilter, utils} from 'ethers';
-import {Swap, Type} from '../models';
+import {Status, Swap, Type} from '../models';
 import {SwapService} from './swap.service';
 import {TokenService} from './token.service';
 
@@ -63,6 +63,7 @@ export class Events {
               to,
               value,
               type: Type.WXPX,
+              status: Status.PENDING,
               createdAt: new Date(Date.now()),
             });
 

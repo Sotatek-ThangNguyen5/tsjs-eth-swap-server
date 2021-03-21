@@ -5,6 +5,11 @@ export enum Type {
   XPX = 'XPX', // Transaction that convert XPX to WXPX
 }
 
+export enum Status {
+  PENDING = 'Pending',
+  FULFILLED = 'fulfilled',
+}
+
 @model()
 export class Swap extends Entity {
   @property({
@@ -12,7 +17,7 @@ export class Swap extends Entity {
     id: true,
     generated: true,
   })
-  _id?: string;
+  _id: string;
 
   @property({
     type: 'string',
@@ -59,6 +64,17 @@ export class Swap extends Entity {
     default: () => new Date(),
   })
   createdAt?: Date;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  status?: Status;
+
+  @property({
+    type: 'string',
+  })
+  fulfillTransaction?: string;
 
   constructor(data?: Partial<Swap>) {
     super(data);
