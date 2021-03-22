@@ -44,8 +44,8 @@ This is an example of how to list things you need to use the software and how to
 
 ## Related Documents
 
-- [Swap XPX to WXPX Flow chart](https://docdro.id/T9sSqIv) - Flow chart describe the flow of how to swap to WXPX ERC20 token from XPX
-- [Swap wXPX to XPX Flow chart](https://docdro.id/sv1FmMR)- Flow chart describe the flow of how to swap to Proximax XPX from wXPX Token
+- [Swap XPX to WXPX Flow chart](https://docdro.id/9kWDnR3) - Flow chart describe the flow of how to swap to WXPX ERC20 token from XPX
+- [Swap wXPX to XPX Flow chart](https://docdro.id/LqPSXKJ)- Flow chart describe the flow of how to swap to Proximax XPX from wXPX Token
 - [Expected API From ETH Swap Server](https://documenter.getpostman.com/view/8088351/TWDcGFTH#eb8fdbc4-6c93-4849-942c-72621dea82dd) - Document about expected API from ETH Swap Server. Can be change for integerating in future
 - [Expected API From XPX Server](https://documenter.getpostman.com/view/8088351/TWDcGFTL#7ff4980f-1a9b-4d25-ac49-0de9c68cabb7)- Document about expected API from XPX Server. Can be change for integerating in future
 
