@@ -8,6 +8,9 @@ export class ConnectionService {
   private infuraProvider = process.env.INFURA_ENDPOINTS;
   private infuraWebSocketProvider = process.env.INFURA_WSS_ENDPOINTS ?? '';
   private fundingAccountPrivateKey = process.env.FUNDING_ACCOUNT_PK ?? '';
+  private increaseGasPriceBy = parseFloat(
+    process.env.INCREASE_GAS_PRICE_PERCENT ?? '10',
+  );
 
   private provider: JsonRpcProvider;
   private websocketProvider: WebSocketProvider;
@@ -48,6 +51,17 @@ export class ConnectionService {
   getWallet = () => {
     return this.wallet;
   };
+
+  // Get gas price from privider
+  getGasPrice = async () => {
+    const gasPrice = await this.provider.getGasPrice();
+    const gasPriceInt = gasPrice.toNumber();
+    // Example: Gas price = 100, we will increase by this percent
+    // 100 * (1 + 10) = 110 (Increase by 10 percent)
+    const gasPriceIncreased = gasPriceInt * (1 + this.increaseGasPriceBy);
+    return gasPriceIncreased;
+  };
+
   // Connect to contract
   // using contract's address and it's abi
   connectContract = (address: string, abi: ContractInterface) => {
