@@ -18,12 +18,21 @@ export class SiriusService {
     amount: number,
     ethTransactionId: BytesLike,
   ) {
-    const response = await axios.post(`${this.url}/transfer-xpx`, {
-      to,
-      amount,
-      ethTransactionId,
-    });
-
-    return response.data;
+    try {
+      const response = await axios.post(`${this.url}/transfer-xpx`, {
+        to,
+        amount,
+        ethTransactionId,
+      });
+      return {
+        status: true,
+        data: response.data,
+      };
+    } catch (error) {
+      return {
+        status: false,
+        error: error.message,
+      };
+    }
   }
 }

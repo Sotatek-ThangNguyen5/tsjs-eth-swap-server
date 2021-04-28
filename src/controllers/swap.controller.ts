@@ -133,28 +133,31 @@ export class SwapController {
       }
 
       this.logger.info(`REQUEST::${depositWxpxRecord.from} requested a swap`);
+
       const siriusResponse = await this.siriusService.transferXpxtoAddress(
-        depositWxpxRecord.from,
+        xpxAddress,
         depositWxpxRecord.value,
         depositWxpxRecord.txid,
       );
 
-      if (!siriusResponse.hash) {
+      if (!siriusResponse.status) {
         throw new Error('Received failed, try again later');
       }
 
+      const siriusTransferTransaction = siriusResponse.data;
+
       await this.swapRepository.updateById(depositWxpxRecord._id, {
         status: Status.FULFILLED,
-        fulfillTransaction: siriusResponse.hash,
+        fulfillTransaction: siriusTransferTransaction.hash,
       });
 
       this.logger.info(
-        `REQUEST FULFILLED::${depositWxpxRecord.from} by ${siriusResponse.hash}`,
+        `REQUEST FULFILLED::${depositWxpxRecord.from} by ${siriusTransferTransaction.hash}`,
       );
 
       return this.res.status(200).send({
         status: true,
-        data: `${siriusResponse.hash}`,
+        data: `${siriusTransferTransaction.hash}`,
       });
     } catch (error) {
       this.logger.error(`Fatal error:verifyMessage: ${error.message}`);
@@ -182,7 +185,7 @@ export class SwapController {
       });
     } catch (error) {
       this.logger.error(`Fatal error:transferWxpx: ${error.message}`);
-      return this.res.status(500).send({
+      return this.res.status(400).send({
         status: false,
         message: error.message,
       });
