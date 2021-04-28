@@ -49,6 +49,7 @@ export class PingController {
       status: true,
       message: 'OK',
       date: new Date(),
+      network: process.env.NETWORK,
     };
   }
 }
