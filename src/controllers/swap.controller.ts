@@ -13,14 +13,11 @@ import {
   response,
   RestBindings,
 } from '@loopback/rest';
+import {Logger} from '@tsed/logger';
 import {Status} from '../models';
 import {SwapRepository} from '../repositories';
-import {
-  ConnectionService,
-  Events,
-  TokenService,
-  VerifierService,
-} from '../services';
+import {Events, TokenService, VerifierService} from '../services';
+import {SiriusService} from '../services/sirius.service';
 
 export interface VerifyMessage {
   address: string;
@@ -37,26 +34,40 @@ export class SwapController {
   @inject(RestBindings.Http.REQUEST) private req: Request;
   @inject(RestBindings.Http.RESPONSE) private res: Response;
 
-  @service() private connectionService: ConnectionService;
+  @service() private eventService: Events;
+  @service() private verifierService: VerifierService;
+  @service() private tokenService: TokenService;
+  @service() private siriusService: SiriusService;
+  @repository(SwapRepository) public swapRepository: SwapRepository;
 
-  constructor(
-    @service() private eventService: Events,
-    @service() private verifierService: VerifierService,
-    @service() private tokenService: TokenService,
-    @repository(SwapRepository) public swapRepository: SwapRepository,
-  ) {}
+  private logger;
+
+  constructor() {
+    // Init Logger
+    this.logger = new Logger('Swap');
+    this.logger.appenders
+      .set('everything', {
+        type: 'file',
+        filename: `${__dirname}/../../logs/swap-logs.log`,
+      })
+      .set('console-log', {
+        type: 'console',
+      });
+  }
 
   @get('/start-swap-server')
   @response(200)
   async startServer(): Promise<Response> {
     try {
       this._startSwapServer();
+      this.logger.info('Server started');
       return this.res.status(200).send({
         status: true,
         data: `Server is STARTED at. ${new Date().toLocaleString()}`,
       });
     } catch (error) {
-      return this.res.status(401).send({
+      this.logger.error(`Fatal error:startServer: ${error.message}`);
+      return this.res.status(400).send({
         status: false,
         message: error.message,
       });
@@ -73,6 +84,7 @@ export class SwapController {
         data: `Server is PAUSED at. ${new Date().toLocaleString()}`,
       });
     } catch (error) {
+      this.logger.error(`Fatal error:pauseServer: ${error.message}`);
       return this.res.status(401).send({
         status: false,
         message: error.message,
@@ -120,21 +132,32 @@ export class SwapController {
         throw new Error('Transfer WXPX record not found or fulfilled!');
       }
 
-      const transaction = await this.tokenService.transferWxpx(
+      this.logger.info(`REQUEST::${depositWxpxRecord.from} requested a swap`);
+      const siriusResponse = await this.siriusService.transferXpxtoAddress(
         depositWxpxRecord.from,
         depositWxpxRecord.value,
+        depositWxpxRecord.txid,
       );
+
+      if (!siriusResponse.hash) {
+        throw new Error('Received failed, try again later');
+      }
 
       await this.swapRepository.updateById(depositWxpxRecord._id, {
         status: Status.FULFILLED,
-        fulfillTransaction: transaction.hash,
+        fulfillTransaction: siriusResponse.hash,
       });
+
+      this.logger.info(
+        `REQUEST FULFILLED::${depositWxpxRecord.from} by ${siriusResponse.hash}`,
+      );
 
       return this.res.status(200).send({
         status: true,
-        data: `${transaction.hash}`,
+        data: `${siriusResponse.hash}`,
       });
     } catch (error) {
+      this.logger.error(`Fatal error:verifyMessage: ${error.message}`);
       return this.res.status(401).send({
         status: false,
         message: error.message,
@@ -158,6 +181,7 @@ export class SwapController {
         data: transferResponse,
       });
     } catch (error) {
+      this.logger.error(`Fatal error:transferWxpx: ${error.message}`);
       return this.res.status(500).send({
         status: false,
         message: error.message,

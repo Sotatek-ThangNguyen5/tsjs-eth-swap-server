@@ -17,10 +17,9 @@ export class Events {
   private isListening: Boolean = false;
   private status: Boolean = true;
   // Constructor for event services
-  constructor(
-    @service() private tokenService: TokenService,
-    @service() private swapService: SwapService,
-  ) {
+  @service() private tokenService: TokenService;
+  @service() private swapService: SwapService;
+  constructor() {
     this.logger = new Logger('Events');
     this.logger.appenders
       .set('everything', {
