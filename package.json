@@ -51,26 +51,25 @@
   ],
   "dependencies": {
     "@loopback/boot": "^3.3.1",
+    "@loopback/build": "^6.3.1",
     "@loopback/core": "^2.15.1",
+    "@loopback/eslint-config": "^10.1.1",
     "@loopback/repository": "^3.5.1",
     "@loopback/rest": "^9.2.1",
     "@loopback/rest-explorer": "^3.2.1",
     "@loopback/service-proxy": "^3.1.1",
+    "@loopback/testlab": "^3.3.1",
     "@tsed/logger": "^5.12.0",
+    "@types/node": "^10.17.56",
     "axios": "^0.21.1",
     "dotenv": "^8.2.0",
+    "eslint": "^7.23.0",
     "ethers": "^5.0.32",
     "loopback-connector-mongodb": "^5.5.0",
-    "tsc-watch": "^4.2.9",
-    "tslib": "^2.0.0"
-  },
-  "devDependencies": {
-    "@loopback/build": "^6.3.1",
-    "@loopback/eslint-config": "^10.1.1",
-    "@loopback/testlab": "^3.3.1",
-    "@types/node": "^10.17.56",
-    "eslint": "^7.23.0",
     "source-map-support": "^0.5.19",
+    "tsc-watch": "^4.2.9",
+    "tslib": "^2.0.0",
     "typescript": "~4.2.3"
-  }
+  },
+  "devDependencies": {}
 }

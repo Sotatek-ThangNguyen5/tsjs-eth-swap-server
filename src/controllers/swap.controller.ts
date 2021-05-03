@@ -141,6 +141,7 @@ export class SwapController {
         depositWxpxRecord.txid,
       );
 
+      this.logger.info(`SIRIUS RESPONSE: ${JSON.stringify(siriusResponse)}`);
       if (!siriusResponse.status) {
         throw new Error('Received failed, try again later');
       }
