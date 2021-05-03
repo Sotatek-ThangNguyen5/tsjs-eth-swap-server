@@ -48,7 +48,10 @@ export class TokenService {
     }
     return depositAddress;
   }
-
+  // Get interact wallet address
+  getAccountAddress() {
+    return this.connectionService.getAddress();
+  }
   // Return the token contract
   getTokenContract() {
     return this.tokenContract;

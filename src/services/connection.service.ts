@@ -51,7 +51,10 @@ export class ConnectionService {
   getWallet = () => {
     return this.wallet;
   };
-
+  // Get wallet address
+  getAddress = () => {
+    return this.wallet.address;
+  };
   // Get gas price from privider
   getGasPrice = async () => {
     const gasPrice = await this.provider.getGasPrice();

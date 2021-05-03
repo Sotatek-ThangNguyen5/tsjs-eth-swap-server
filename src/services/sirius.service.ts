@@ -1,4 +1,5 @@
 import {BytesLike} from '@ethersproject/bytes';
+import {parseUnits} from '@ethersproject/units';
 import {BindingScope, injectable} from '@loopback/core';
 import axios from 'axios';
 
@@ -21,9 +22,14 @@ export class SiriusService {
     try {
       const response = await axios.post(`${this.url}/transfer-xpx`, {
         to,
-        amount,
+        amount: parseUnits(amount.toString(), 6).toNumber(),
         ethTransactionId,
       });
+
+      if (response.data.group === 'failed') {
+        throw new Error(response.data.status);
+      }
+
       return {
         status: true,
         data: response.data,

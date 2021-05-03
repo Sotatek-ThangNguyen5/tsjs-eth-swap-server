@@ -6,7 +6,7 @@ export enum Type {
 }
 
 export enum Status {
-  PENDING = 'Pending',
+  PENDING = 'pending',
   FULFILLED = 'fulfilled',
 }
 
@@ -31,9 +31,8 @@ export class Swap extends Entity {
 
   @property({
     type: 'number',
-    required: true,
   })
-  blockNumber: number;
+  blockNumber?: number;
 
   @property({
     type: 'number',

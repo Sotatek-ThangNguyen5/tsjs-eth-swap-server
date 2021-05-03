@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 // Uncomment these imports to begin using these cool features!
 
+import {isAddress} from '@ethersproject/address';
 import {BytesLike} from '@ethersproject/bytes';
 import {inject, service} from '@loopback/core';
 import {repository} from '@loopback/repository';
@@ -14,7 +15,7 @@ import {
   RestBindings,
 } from '@loopback/rest';
 import {Logger} from '@tsed/logger';
-import {Status} from '../models';
+import {Status, Type} from '../models';
 import {SwapRepository} from '../repositories';
 import {Events, TokenService, VerifierService} from '../services';
 import {SiriusService} from '../services/sirius.service';
@@ -27,7 +28,7 @@ export interface VerifyMessage {
 export interface TransferData {
   address: string;
   value: number;
-  txid?: string;
+  txid: string;
 }
 
 export class SwapController {
@@ -179,9 +180,32 @@ export class SwapController {
         transferData.value,
       );
 
+      if (!isAddress(transferData.address)) {
+        throw new Error('Invalid ethereum address format');
+      }
+
+      if (!transferResponse.hash) {
+        throw new Error('Transfer failed by provider error - try again later');
+      }
+
+      await this.swapRepository.create({
+        txid: transferData.txid,
+        value: transferData.value,
+        from: this.tokenService.getAccountAddress(),
+        to: transferData.address,
+        type: Type.XPX,
+        status: Status.FULFILLED,
+        fulfillTransaction: transferResponse.hash,
+      });
+
       return this.res.status(200).send({
         status: true,
-        data: transferResponse,
+        data: {
+          nonce: transferResponse.nonce,
+          gasPrice: parseInt(transferResponse.gasPrice),
+          gasLimit: parseInt(transferResponse.gasLimit),
+          hash: transferResponse.hash,
+        },
       });
     } catch (error) {
       this.logger.error(`Fatal error:transferWxpx: ${error.message}`);

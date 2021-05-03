@@ -1,7 +1,5 @@
-const abi = [
-  {
-    inputs: [
-      {
+const abi = [{
+    inputs: [{
         internalType: 'string',
         name: 'name',
         type: 'string',
@@ -27,8 +25,7 @@ const abi = [
   },
   {
     anonymous: false,
-    inputs: [
-      {
+    inputs: [{
         indexed: true,
         internalType: 'address',
         name: 'owner',
@@ -52,21 +49,18 @@ const abi = [
   },
   {
     anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-    ],
+    inputs: [{
+      indexed: false,
+      internalType: 'address',
+      name: 'account',
+      type: 'address',
+    }, ],
     name: 'Paused',
     type: 'event',
   },
   {
     anonymous: false,
-    inputs: [
-      {
+    inputs: [{
         indexed: true,
         internalType: 'bytes32',
         name: 'role',
@@ -90,8 +84,7 @@ const abi = [
   },
   {
     anonymous: false,
-    inputs: [
-      {
+    inputs: [{
         indexed: true,
         internalType: 'bytes32',
         name: 'role',
@@ -115,8 +108,7 @@ const abi = [
   },
   {
     anonymous: false,
-    inputs: [
-      {
+    inputs: [{
         indexed: true,
         internalType: 'bytes32',
         name: 'role',
@@ -140,8 +132,7 @@ const abi = [
   },
   {
     anonymous: false,
-    inputs: [
-      {
+    inputs: [{
         indexed: true,
         internalType: 'address',
         name: 'from',
@@ -165,59 +156,50 @@ const abi = [
   },
   {
     anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-    ],
+    inputs: [{
+      indexed: false,
+      internalType: 'address',
+      name: 'account',
+      type: 'address',
+    }, ],
     name: 'Unpaused',
     type: 'event',
   },
   {
     inputs: [],
     name: 'DEFAULT_ADMIN_ROLE',
-    outputs: [
-      {
-        internalType: 'bytes32',
-        name: '',
-        type: 'bytes32',
-      },
-    ],
+    outputs: [{
+      internalType: 'bytes32',
+      name: '',
+      type: 'bytes32',
+    }, ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [],
     name: 'MINTER_ROLE',
-    outputs: [
-      {
-        internalType: 'bytes32',
-        name: '',
-        type: 'bytes32',
-      },
-    ],
+    outputs: [{
+      internalType: 'bytes32',
+      name: '',
+      type: 'bytes32',
+    }, ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [],
     name: 'PAUSER_ROLE',
-    outputs: [
-      {
-        internalType: 'bytes32',
-        name: '',
-        type: 'bytes32',
-      },
-    ],
+    outputs: [{
+      internalType: 'bytes32',
+      name: '',
+      type: 'bytes32',
+    }, ],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [
-      {
+    inputs: [{
         internalType: 'address',
         name: 'owner',
         type: 'address',
@@ -229,19 +211,16 @@ const abi = [
       },
     ],
     name: 'allowance',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
+    outputs: [{
+      internalType: 'uint256',
+      name: '',
+      type: 'uint256',
+    }, ],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [
-      {
+    inputs: [{
         internalType: 'address',
         name: 'spender',
         type: 'address',
@@ -253,64 +232,53 @@ const abi = [
       },
     ],
     name: 'approve',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
+    outputs: [{
+      internalType: 'bool',
+      name: '',
+      type: 'bool',
+    }, ],
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-    ],
+    inputs: [{
+      internalType: 'address',
+      name: 'account',
+      type: 'address',
+    }, ],
     name: 'balanceOf',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
+    outputs: [{
+      internalType: 'uint256',
+      name: '',
+      type: 'uint256',
+    }, ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [],
     name: 'cap',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
+    outputs: [{
+      internalType: 'uint256',
+      name: '',
+      type: 'uint256',
+    }, ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [],
     name: 'decimals',
-    outputs: [
-      {
-        internalType: 'uint8',
-        name: '',
-        type: 'uint8',
-      },
-    ],
+    outputs: [{
+      internalType: 'uint8',
+      name: '',
+      type: 'uint8',
+    }, ],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [
-      {
+    inputs: [{
         internalType: 'address',
         name: 'spender',
         type: 'address',
@@ -322,38 +290,31 @@ const abi = [
       },
     ],
     name: 'decreaseAllowance',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
+    outputs: [{
+      internalType: 'bool',
+      name: '',
+      type: 'bool',
+    }, ],
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-    ],
+    inputs: [{
+      internalType: 'bytes32',
+      name: 'role',
+      type: 'bytes32',
+    }, ],
     name: 'getRoleAdmin',
-    outputs: [
-      {
-        internalType: 'bytes32',
-        name: '',
-        type: 'bytes32',
-      },
-    ],
+    outputs: [{
+      internalType: 'bytes32',
+      name: '',
+      type: 'bytes32',
+    }, ],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [
-      {
+    inputs: [{
         internalType: 'bytes32',
         name: 'role',
         type: 'bytes32',
@@ -365,38 +326,31 @@ const abi = [
       },
     ],
     name: 'getRoleMember',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
+    outputs: [{
+      internalType: 'address',
+      name: '',
+      type: 'address',
+    }, ],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-    ],
+    inputs: [{
+      internalType: 'bytes32',
+      name: 'role',
+      type: 'bytes32',
+    }, ],
     name: 'getRoleMemberCount',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
+    outputs: [{
+      internalType: 'uint256',
+      name: '',
+      type: 'uint256',
+    }, ],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [
-      {
+    inputs: [{
         internalType: 'bytes32',
         name: 'role',
         type: 'bytes32',
@@ -413,8 +367,7 @@ const abi = [
     type: 'function',
   },
   {
-    inputs: [
-      {
+    inputs: [{
         internalType: 'bytes32',
         name: 'role',
         type: 'bytes32',
@@ -426,19 +379,16 @@ const abi = [
       },
     ],
     name: 'hasRole',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
+    outputs: [{
+      internalType: 'bool',
+      name: '',
+      type: 'bool',
+    }, ],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [
-      {
+    inputs: [{
         internalType: 'address',
         name: 'spender',
         type: 'address',
@@ -450,19 +400,16 @@ const abi = [
       },
     ],
     name: 'increaseAllowance',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
+    outputs: [{
+      internalType: 'bool',
+      name: '',
+      type: 'bool',
+    }, ],
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    inputs: [
-      {
+    inputs: [{
         internalType: 'address',
         name: 'to',
         type: 'address',
@@ -481,13 +428,11 @@ const abi = [
   {
     inputs: [],
     name: 'name',
-    outputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string',
-      },
-    ],
+    outputs: [{
+      internalType: 'string',
+      name: '',
+      type: 'string',
+    }, ],
     stateMutability: 'view',
     type: 'function',
   },
@@ -501,19 +446,16 @@ const abi = [
   {
     inputs: [],
     name: 'paused',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
+    outputs: [{
+      internalType: 'bool',
+      name: '',
+      type: 'bool',
+    }, ],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [
-      {
+    inputs: [{
         internalType: 'bytes32',
         name: 'role',
         type: 'bytes32',
@@ -530,8 +472,7 @@ const abi = [
     type: 'function',
   },
   {
-    inputs: [
-      {
+    inputs: [{
         internalType: 'bytes32',
         name: 'role',
         type: 'bytes32',
@@ -550,32 +491,27 @@ const abi = [
   {
     inputs: [],
     name: 'symbol',
-    outputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string',
-      },
-    ],
+    outputs: [{
+      internalType: 'string',
+      name: '',
+      type: 'string',
+    }, ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [],
     name: 'totalSupply',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
+    outputs: [{
+      internalType: 'uint256',
+      name: '',
+      type: 'uint256',
+    }, ],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [
-      {
+    inputs: [{
         internalType: 'address',
         name: 'recipient',
         type: 'address',
@@ -587,19 +523,16 @@ const abi = [
       },
     ],
     name: 'transfer',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
+    outputs: [{
+      internalType: 'bool',
+      name: '',
+      type: 'bool',
+    }, ],
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    inputs: [
-      {
+    inputs: [{
         internalType: 'address',
         name: 'sender',
         type: 'address',
@@ -616,13 +549,11 @@ const abi = [
       },
     ],
     name: 'transferFrom',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
+    outputs: [{
+      internalType: 'bool',
+      name: '',
+      type: 'bool',
+    }, ],
     stateMutability: 'nonpayable',
     type: 'function',
   },
@@ -647,7 +578,9 @@ $(document).ready(async function () {
   // Start checking for metamask
   if (typeof window.ethereum !== 'undefined') {
     try {
-      const accounts = await ethereum.request({method: 'eth_requestAccounts'});
+      const accounts = await ethereum.request({
+        method: 'eth_requestAccounts'
+      });
       const account = accounts[0];
       if (account) {
         updateTextOf(connectBtn, account);
@@ -659,7 +592,9 @@ $(document).ready(async function () {
 
   // Handle Transfer
   connectBtn.on('click', async function () {
-    const accounts = await ethereum.request({method: 'eth_requestAccounts'});
+    const accounts = await ethereum.request({
+      method: 'eth_requestAccounts'
+    });
     const account = accounts[0];
     updateTextOf(connectBtn, account);
     return false;
