@@ -1,5 +1,4 @@
 import {BytesLike} from '@ethersproject/bytes';
-import {parseUnits} from '@ethersproject/units';
 import {BindingScope, injectable} from '@loopback/core';
 import axios from 'axios';
 
@@ -14,15 +13,10 @@ export class SiriusService {
     return response.data;
   }
 
-  async transferXpxtoAddress(
-    to: string,
-    amount: number,
-    ethTransactionId: BytesLike,
-  ) {
+  async transferXpxtoAddress(to: string, ethTransactionId: BytesLike) {
     try {
       const response = await axios.post(`${this.url}/transfer-xpx`, {
-        to,
-        amount: parseUnits(amount.toString(), 6).toNumber(),
+        siriusRecipient: to,
         ethTransactionId,
       });
 

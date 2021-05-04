@@ -137,7 +137,6 @@ export class SwapController {
 
       const siriusResponse = await this.siriusService.transferXpxtoAddress(
         xpxAddress,
-        depositWxpxRecord.value,
         depositWxpxRecord.txid,
       );
 
