@@ -56,6 +56,10 @@ export class TokenService {
   getTokenContract() {
     return this.tokenContract;
   }
+  // Return token balance of funding account
+  getTokenBalanceOf(address: string) {
+    return this.tokenContract.balanceOf(address);
+  }
 
   // Transfer WXPX
   async transferWxpx(to: string, value: number) {

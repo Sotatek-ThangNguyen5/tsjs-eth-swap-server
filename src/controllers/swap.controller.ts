@@ -175,14 +175,23 @@ export class SwapController {
     @requestBody() transferData: TransferData,
   ): Promise<Response> {
     try {
+      if (!isAddress(transferData.address)) {
+        throw new Error('Invalid ethereum address format');
+      }
+
+      const fundingAccount = this.tokenService.getAccountAddress();
+      const fundingAccountBalance = this.tokenService.getTokenBalanceOf(
+        fundingAccount,
+      );
+
+      if (fundingAccountBalance < transferData.value) {
+        throw new Error('Funding account not enough WXPX');
+      }
+
       const transferResponse = await this.tokenService.transferWxpx(
         transferData.address,
         transferData.value,
       );
-
-      if (!isAddress(transferData.address)) {
-        throw new Error('Invalid ethereum address format');
-      }
 
       if (!transferResponse.hash) {
         throw new Error('Transfer failed by provider error - try again later');
