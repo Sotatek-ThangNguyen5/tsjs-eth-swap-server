@@ -15,12 +15,20 @@ export class SiriusService {
 
   async transferXpxtoAddress(to: string, ethTransactionId: BytesLike) {
     try {
-      const response = await axios.post(`${this.url}/transfer-xpx`, {
+      const data = JSON.stringify({
         siriusRecipient: to,
-        ethTransactionId,
+        txnInfo: {
+          network: 'ETH',
+          txnHash: ethTransactionId,
+        },
       });
-
-      if (response.data.group === 'failed') {
+      const response = await axios.post(`${this.url}/transfer-xpx`, data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (response.data.status != 'Success') {
         throw new Error(response.data.status);
       }
 
