@@ -2,87 +2,138 @@
 <html lang="en">
 
 <head>
-  <title>Chain-swap your wXPX from Proximax Sirius to Ethereum, vice versa. Lowest fee, instantly, securely. No registration, no deposit, no withdrawal</title>
+  <title>Chain-swap your wXPX from Proximax Sirius to Ethereum, vice versa. Lowest fee, instantly, securely. No
+    registration, no deposit, no withdrawal</title>
 
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="shortcut icon" type="image/x-icon" href="https://loopback.io/favicon.ico">
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
 
-  <style>
-    h3 {
-      margin-left: 25px;
-      text-align: center;
-    }
-
-    a, a:visited {
-      color: #3f5dff;
-    }
-
-    h3 a {
-      margin-left: 10px;
-    }
-
-    a:hover, a:focus, a:active {
-      color: #001956;
-    }
-
-    .power {
-      position: absolute;
-      bottom: 25px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .info {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%)
-    }
-
-    .info h1 {
-      text-align: center;
-      margin-bottom: 0;
-    }
-
-    .info p {
-      text-align: center;
-      margin-bottom: 3em;
-      margin-top: 1em;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      body {
-        background-color: rgb(29, 30, 32);
-        color: white;
-      }
-
-      a, a:visited {
-        color: #4990e2;
-      }
-
-      a:hover, a:focus, a:active {
-        color: #2b78ff;
-      }
-    }
-  </style>
+  <link href="./css/swap.css" rel="stylesheet">
+  <link href="./css/neumorphism.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 </head>
 
 <body>
-  <div class="info">
-    <h1>tsjs-eth-swap-server</h1>
-    <p>Version 1.0.0</p>
+  <main>
+    <!-- Section -->
+    <section class="min-vh-100 d-flex bg-primary align-items-center">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-8 col-lg-8 justify-content-center">
+            <div class="card bg-primary shadow-soft border-light p-4">
+              <div class="card-header text-center pb-0">
+                <h2 class="h4">Swap WXPX & XPX</h2>
+              </div>
+              <div class="card-body">
+                <form action="#" class="mt-4">
+                  <!-- Form -->
+                  <div class="form-group">
+                    <label for="exampleInputIcon3">Step 1: Connect metamask</label>
+                    <div class="input-group mb-4">
+                      <div class="btn btn-block btn-primary pointer web3-connect">Click to
+                        connect</div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputIcon3">Step 2: Transfer your WXPX</label>
+                    <input class="form-control transfer-value" placeholder="Amount of WXPX to swap" type="amount"
+                      aria-label="amount" required>
+                    <div class="input-group mb-4 mt-1">
+                      <div class="btn btn-block btn-primary pointer transfer">Transfer</div>
+                    </div>
+                  </div>
+                </form>
+                <p class="transaction-history">Your transactions: </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <h3>OpenAPI spec: <a href="/openapi.json">/openapi.json</a></h3>
-    <h3>API Explorer: <a href="/explorer">/explorer</a></h3>
-  </div>
-
-  <footer class="power">
-    <a href="https://loopback.io" target="_blank">
-      <img src="https://loopback.io/images/branding/powered-by-loopback/blue/powered-by-loopback-sm.png" />
-    </a>
-  </footer>
+    <section class="min-vh-100 d-flex bg-primary align-items-center">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-8 col-lg-8 justify-content-center">
+            <div class="card bg-primary shadow-soft border-light p-4">
+              <div class="card-header text-center pb-0">
+                <h2 class="h4">Sign Ownership Signature</h2>
+              </div>
+              <div class="card-body">
+                <form action="#" class="mt-4">
+                  <!-- Form -->
+                  <div class="form-group">
+                    <label for="exampleInputIcon3">Step 1: Enter your account address</label>
+                    <div class="input-group mb-4">
+                      <input class="form-control xpx-address" placeholder="Your XPX Address" type="amount"
+                        aria-label="amount" required>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputIcon3">Step 2: Enter your transfer transaction</label>
+                    <div class="input-group mb-4">
+                      <input class="form-control transaction-hash" placeholder="0x" type="amount" aria-label="amount"
+                        required>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputIcon3">Step 3: Sign message</label>
+                    <div class="input-group mb-4 mt-1">
+                      <div class="btn btn-block btn-primary pointer signer">Sign Message</div>
+                    </div>
+                  </div>
+                  <pre class="signature-data" id="signature-data"></pre>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="min-vh-100 d-flex bg-primary align-items-center">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-8 col-lg-8 justify-content-center">
+            <div class="card bg-primary shadow-soft border-light p-4">
+              <div class="card-header text-center pb-0">
+                <h2 class="h4">Prove your ownership to receive XPX</h2>
+              </div>
+              <div class="card-body">
+                <form action="#" class="mt-4">
+                  <div class="form-group">
+                    <label>Step 1: Enter your signature hash</label>
+                    <div class="input-group mb-4">
+                      <textarea class="form-control prove-signature" rows="6" placeholder="Signature bytes"
+                        type="amount" aria-label="amount"></textarea>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Step 2: Receive your XPX</label>
+                    <div class="input-group mb-4 mt-1">
+                      <button class="btn btn-block btn-primary pointer claim-xpx">Claim XPX</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+  integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+  crossorigin="anonymous"></script>
+
+<script type="module">
+  import { ethers } from "./js/ethers.min.js";
+  window.ethers = ethers;
+</script>
+
+<script src="./js/swap.js"></script>
 
 </html>

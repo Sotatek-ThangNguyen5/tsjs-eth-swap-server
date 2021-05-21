@@ -1,0 +1,73 @@
+h3 {
+  margin-left: 25px;
+  text-align: center;
+}
+
+a,
+a:visited {
+  color: #3f5dff;
+}
+
+h3 a {
+  margin-left: 10px;
+}
+
+a:hover,
+a:focus,
+a:active {
+  color: #001956;
+}
+
+.power {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.info {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.info h1 {
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.info p {
+  text-align: center;
+  margin-bottom: 3em;
+  margin-top: 1em;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.web3-connect {
+  border: 1px solid black;
+  width: 70px;
+  overflow: auto;
+  white-space: nowrap;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: rgb(29, 30, 32);
+    color: white;
+  }
+
+  a,
+  a:visited {
+    color: #4990e2;
+  }
+
+  a:hover,
+  a:focus,
+  a:active {
+    color: #2b78ff;
+  }
+}
