@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import {BindingScope, injectable, service} from '@loopback/core';
 import {Logger} from '@tsed/logger';
-import {EventFilter, utils} from 'ethers';
 import {Status, Swap, Type} from '../models';
+import {ConnectionService} from './connection.service';
 import {SwapService} from './swap.service';
 import {TokenService} from './token.service';
 
@@ -14,9 +14,12 @@ export class Events {
   // prevent double events on one chanel
   private isListening: Boolean = false;
   private status: Boolean = true;
+  private provider: any;
   // Constructor for event services
   @service() private tokenService: TokenService;
   @service() private swapService: SwapService;
+  @service() private connectionService: ConnectionService;
+
   constructor() {
     this.logger = new Logger('Events');
     this.logger.appenders
@@ -30,6 +33,7 @@ export class Events {
   }
 
   async newSwap() {
+    this.provider = this.connectionService.getProvider();
     this.status = true;
     if (!this.isListening) {
       this.logger.info(
@@ -38,40 +42,66 @@ export class Events {
       const tokenContract = this.tokenService.getTokenContract();
       const depositAddress = this.tokenService.getDepositAddress();
 
-      const filter: EventFilter = {
-        address: tokenContract.address,
-        topics: [utils.id('Transfer(address,address,uint256)')],
-      };
+      const queryFilter = tokenContract.filters.Transfer(
+        null,
+        depositAddress,
+      );
 
-      tokenContract.on(filter, async (from, to, value, transactionDetail) => {
-        if (!this.status) {
-          this.logger.info(
-            `Events: New swap are detected but server are paused. From: ${from}, value: ${value}`,
-          );
-        } else {
-          if (to === depositAddress) {
-            this.logger.info(
-              `Events: new swap are detected. From: ${from}, value: ${value}`,
-            );
-            const newSwapRecord = new Swap({
-              txid: transactionDetail.transactionHash,
-              blockNumber: transactionDetail.blockNumber,
-              from,
-              to,
-              value,
-              type: Type.WXPX,
-              status: Status.PENDING,
-              createdAt: new Date(Date.now()),
-            });
+      this.provider.on('block', (newBlock: any) => {
+        tokenContract.queryFilter(queryFilter, -30).then(async (transactionList) => {
+          // eslint-disable-next-line @typescript-eslint/prefer-for-of
+          for (let i = 0; i < transactionList.length; i++) {
+            const transaction = transactionList[i];
+            if (!transaction || !transaction.args) {
+              console.log("Record empty");
+              continue;
+            }
 
-            this.swapService.createRecord(newSwapRecord);
+            const from = transaction.args.from;
+            const value = transaction.args.value;
+            const to = transaction.args.to;
+            const hash = transaction.transactionHash;
+            const blockNumber = transaction.blockNumber;
 
-            this.logger.info(
-              `Events: Created swap record for ${newSwapRecord.txid}`,
-            );
+            const record = await this.swapService.findByHash(hash);
+
+            if (record) {
+              continue;
+            }
+
+            if (!this.status) {
+              this.logger.info(
+                `Events: New swap are detected but server are paused. From: ${from}, value: ${value}`,
+              );
+
+            } else {
+              if (to === depositAddress) {
+
+                this.logger.info(
+                  `Events: new swap are detected. From: ${from}, value: ${value}`,
+                );
+
+                const newSwapRecord = new Swap({
+                  txid: hash,
+                  blockNumber,
+                  from,
+                  to,
+                  value,
+                  type: Type.WXPX,
+                  status: Status.PENDING,
+                  createdAt: new Date(Date.now()),
+                });
+
+                this.swapService.createRecord(newSwapRecord);
+
+                this.logger.info(
+                  `Events: Created swap record for ${newSwapRecord.txid}`,
+                );
+              }
+            }
           }
-        }
-      });
+        });
+      })
       this.isListening = true;
     } else {
       this.logger.error(
