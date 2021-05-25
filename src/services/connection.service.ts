@@ -2,7 +2,7 @@ import {JsonRpcProvider, WebSocketProvider} from '@ethersproject/providers';
 import {BindingScope, injectable} from '@loopback/core';
 import {Contract, ContractInterface, ethers, Wallet} from 'ethers';
 
-@injectable({scope: BindingScope.TRANSIENT})
+@injectable({scope: BindingScope.SINGLETON})
 export class ConnectionService {
   private network = process.env.NETWORK ?? 'homestead';
   private infuraProvider = process.env.INFURA_ENDPOINTS;
