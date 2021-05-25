@@ -62,10 +62,10 @@ export class TokenService {
   }
 
   // Transfer WXPX
-  async transferWxpx(to: string, value: number) {
-    const gasPrice = await this.connectionService.getGasPrice();
+  async transferWxpx(to: string, value?: number, gasLevel?: string) {
+    const gasPrice = await this.connectionService.getGasPrice(gasLevel);
     const transferResponse = await this.tokenContract.transfer(to, value, {
-      gasPrice,
+      gasPrice: gasPrice.toFixed(),
     });
     return transferResponse;
   }

@@ -56,13 +56,18 @@ export class ConnectionService {
     return this.wallet.address;
   };
   // Get gas price from privider
-  getGasPrice = async () => {
+  getGasPrice = async (gasLevel?: string) => {
     const gasPrice = await this.provider.getGasPrice();
     const gasPriceInt = gasPrice.toNumber();
     // Example: Gas price = 100, we will increase by this percent
     // 100 * (1 + 10) = 110 (Increase by 10 percent)
-    const gasPriceIncreased = gasPriceInt * (1 + this.increaseGasPriceBy);
-    return gasPriceIncreased;
+    if (gasLevel === 'high') {
+      return gasPriceInt * (1+ 40) / 100;
+    } else if (gasLevel === 'medium') {
+      return  gasPriceInt * (100 + this.increaseGasPriceBy) / 100;
+    } else {
+      return gasPriceInt;
+    }
   };
 
   // Connect to contract

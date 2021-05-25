@@ -12,7 +12,7 @@ import {
   requestBody,
   Response,
   response,
-  RestBindings,
+  RestBindings
 } from '@loopback/rest';
 import {Logger} from '@tsed/logger';
 import {Status, Type} from '../models';
@@ -27,8 +27,8 @@ export interface VerifyMessage {
 }
 export interface TransferData {
   address: string;
-  value: number;
   txid: string;
+  gasPrice: string;
 }
 
 export class SwapController {
@@ -184,13 +184,37 @@ export class SwapController {
         fundingAccount,
       );
 
-      if (fundingAccountBalance < transferData.value) {
+      const getTransactionResult = await this.siriusService.getTransactionDetail(transferData.txid);
+
+      if (!getTransactionResult || !getTransactionResult.status) {
+        throw new Error("Get XPX transaction detail failed");
+      }
+
+
+      const transactionValue = getTransactionResult.value;
+
+      if (!transactionValue) {
+        throw new Error("Transaction value is zero or not found");
+      }
+
+      if (fundingAccountBalance < transactionValue) {
         throw new Error('Funding account not enough WXPX');
+      }
+
+      const transferRecord = await this.swapRepository.findOne({
+        where: {
+          txid: transferData.txid,
+        },
+      })
+
+      if (transferRecord) {
+        throw new Error(`Duplicate transfer to this txid, hash: ${transferRecord.fulfillTransaction}`)
       }
 
       const transferResponse = await this.tokenService.transferWxpx(
         transferData.address,
-        transferData.value,
+        transactionValue,
+        transferData.gasPrice
       );
 
       if (!transferResponse.hash) {
@@ -199,13 +223,15 @@ export class SwapController {
 
       await this.swapRepository.create({
         txid: transferData.txid,
-        value: transferData.value,
+        value: transactionValue,
         from: this.tokenService.getAccountAddress(),
         to: transferData.address,
         type: Type.XPX,
         status: Status.FULFILLED,
         fulfillTransaction: transferResponse.hash,
       });
+
+      this.logger.info(`WXPX Sent to: ${transferData.txid} value: ${transactionValue}`);
 
       return this.res.status(200).send({
         status: true,
