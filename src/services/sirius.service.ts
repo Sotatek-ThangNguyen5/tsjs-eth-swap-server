@@ -1,12 +1,16 @@
 import {BytesLike} from '@ethersproject/bytes';
 import {BindingScope, injectable} from '@loopback/core';
 import axios from 'axios';
+import {TransactionHttp} from 'tsjs-xpx-chain-sdk';
 
 @injectable({scope: BindingScope.SINGLETON})
 export class SiriusService {
   private url = process.env.XPX_SERVER_URL ?? '';
+  private API_URL = process.env.XPX_API_URL ?? '';
+  private transactionHttp = new TransactionHttp(this.API_URL);
 
-  constructor() {}
+  constructor() {
+  }
 
   async checkHealth() {
     const response = await axios.get(`${this.url}/check-health`);
@@ -27,8 +31,8 @@ export class SiriusService {
           'Content-Type': 'application/json',
         },
       });
-      
-      if (response.data.status != 'Success') {
+
+      if (response.data.status !== 'Success') {
         throw new Error(response.data.status);
       }
 
@@ -42,5 +46,34 @@ export class SiriusService {
         error: error.message,
       };
     }
+  }
+
+  async getTransactionDetail(txhash: string) {
+    try {
+      const data: any = await this.getTransactionPromise(txhash);
+      return {
+        status: true,
+        value: parseInt(data.transaction.mosaics[0].amount[0])
+      }
+    } catch (error) {
+      return {
+        status: false,
+        value: 0,
+        error: error.message
+      }
+    }
+  }
+
+  getTransactionPromise(txhash: any) {
+    return new Promise((resolve, reject) => {
+      try {
+        this.transactionHttp.getTransaction(txhash).subscribe(rs => {
+          const response: any = rs.toJSON();
+          resolve(response);
+        });
+      } catch (error) {
+          reject(error.message)
+      }
+    })
   }
 }

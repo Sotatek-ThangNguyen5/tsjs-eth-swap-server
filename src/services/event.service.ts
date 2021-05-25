@@ -9,8 +9,6 @@ import {TokenService} from './token.service';
 
 @injectable({scope: BindingScope.SINGLETON})
 export class Events {
-  // Create static instance
-  private static instance: Events;
   private logger;
   // Property that describe status of websocket
   // prevent double events on one chanel
