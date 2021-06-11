@@ -187,7 +187,7 @@ export class SwapController {
       const getTransactionStatus = await this.siriusService.getTransactionStatus(transferData.txid);
 
       if (!getTransactionStatus) {
-        throw new Error("Transaction Invalid or not foundable!");
+        throw new Error("Transaction invalid or not confirmed!");
       }
 
       const getTransactionResult = await this.siriusService.getTransactionDetail(transferData.txid);

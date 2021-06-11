@@ -65,7 +65,10 @@ export class SiriusService {
 
   async getTransactionStatus(txhash: string) {
     try {
-      await this.getTransactionStatusPromise(txhash);
+      const transactionStatus: any = await this.getTransactionStatusPromise(txhash);
+      if (transactionStatus.status !== "Success") {
+        return false;
+      }
       return true;
     } catch (error) {
       return false;
