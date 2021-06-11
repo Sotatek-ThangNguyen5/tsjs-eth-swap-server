@@ -184,6 +184,12 @@ export class SwapController {
         fundingAccount,
       );
 
+      const getTransactionStatus = await this.siriusService.getTransactionStatus(transferData.txid);
+
+      if (!getTransactionStatus) {
+        throw new Error("Transaction Invalid or not foundable!");
+      }
+
       const getTransactionResult = await this.siriusService.getTransactionDetail(transferData.txid);
 
       if (!getTransactionResult || !getTransactionResult.status) {

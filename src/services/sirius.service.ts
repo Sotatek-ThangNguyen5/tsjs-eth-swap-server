@@ -9,8 +9,7 @@ export class SiriusService {
   private API_URL = process.env.XPX_API_URL ?? '';
   private transactionHttp = new TransactionHttp(this.API_URL);
 
-  constructor() {
-  }
+  constructor() { }
 
   async checkHealth() {
     const response = await axios.get(`${this.url}/check-health`);
@@ -53,27 +52,57 @@ export class SiriusService {
       const data: any = await this.getTransactionPromise(txhash);
       return {
         status: true,
-        value: parseInt(data.transaction.mosaics[0].amount[0])
-      }
+        value: parseInt(data.transaction.mosaics[0].amount[0]),
+      };
     } catch (error) {
       return {
         status: false,
         value: 0,
-        error: error.message
-      }
+        error: error.message,
+      };
+    }
+  }
+
+  async getTransactionStatus(txhash: string) {
+    try {
+      await this.getTransactionStatusPromise(txhash);
+      return true;
+    } catch (error) {
+      return false;
     }
   }
 
   getTransactionPromise(txhash: any) {
+    let error = false;
     return new Promise((resolve, reject) => {
       try {
         this.transactionHttp.getTransaction(txhash).subscribe(rs => {
           const response: any = rs.toJSON();
           resolve(response);
+        }, err => {
+          error = err;
         });
-      } catch (error) {
-          reject(error.message)
+
+        if (error) {
+          reject(error);
+        }
+      } catch (err) {
+        reject(err.message);
       }
-    })
+    });
+  }
+
+  getTransactionStatusPromise(txhash: any) {
+    return new Promise((resolve, reject) => {
+      try {
+        this.transactionHttp.getTransactionStatus(txhash).subscribe(rs => {
+          resolve(rs);
+        }, err => {
+          reject(err);
+        });
+      } catch (err) {
+        reject(err.message);
+      }
+    });
   }
 }
