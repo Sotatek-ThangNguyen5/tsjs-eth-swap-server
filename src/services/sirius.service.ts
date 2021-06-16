@@ -50,9 +50,15 @@ export class SiriusService {
   async getTransactionDetail(txhash: string) {
     try {
       const data: any = await this.getTransactionPromise(txhash);
+      const jsonData = await data.toJSON();
+      const value = jsonData.transaction.mosaics[0].amount[0];
+      const message = JSON.parse(data.message.payload);
       return {
         status: true,
-        value: parseInt(data.transaction.mosaics[0].amount[0]),
+        value: value,
+        address: message.Swap.signer,
+        hash: message.Swap.hash,
+        gasLevel: message.Swap.gasLevel,
       };
     } catch (error) {
       return {
@@ -80,8 +86,7 @@ export class SiriusService {
     return new Promise((resolve, reject) => {
       try {
         this.transactionHttp.getTransaction(txhash).subscribe(rs => {
-          const response: any = rs.toJSON();
-          resolve(response);
+          resolve(rs);
         }, err => {
           error = err;
         });

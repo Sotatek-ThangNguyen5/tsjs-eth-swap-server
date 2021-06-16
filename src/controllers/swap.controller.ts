@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 // Uncomment these imports to begin using these cool features!
 
-import {isAddress} from '@ethersproject/address';
 import {BytesLike} from '@ethersproject/bytes';
 import {inject, service} from '@loopback/core';
 import {repository} from '@loopback/repository';
@@ -15,6 +14,7 @@ import {
   RestBindings
 } from '@loopback/rest';
 import {Logger} from '@tsed/logger';
+import {isAddress} from 'ethers/lib/utils';
 import {Status, Type} from '../models';
 import {SwapRepository} from '../repositories';
 import {Events, TokenService, VerifierService} from '../services';
@@ -26,9 +26,12 @@ export interface VerifyMessage {
   originMessage: string;
 }
 export interface TransferData {
-  address: string;
-  txid: string;
-  gasPrice: string;
+  txnInfo: TxData;
+}
+
+export interface TxData {
+  "network": string,
+  "txnHash": string,
 }
 
 export class SwapController {
@@ -173,43 +176,46 @@ export class SwapController {
   @response(200)
   async transferWxpx(
     @requestBody() transferData: TransferData,
-  ): Promise<Response> {
+  ) {
     try {
-      if (!isAddress(transferData.address)) {
-        throw new Error('Invalid ethereum address format');
-      }
 
       const fundingAccount = this.tokenService.getAccountAddress();
       const fundingAccountBalance = this.tokenService.getTokenBalanceOf(
         fundingAccount,
       );
 
-      const getTransactionStatus = await this.siriusService.getTransactionStatus(transferData.txid);
+      const getTransactionStatus = await this.siriusService.getTransactionStatus(transferData.txnInfo.txnHash);
 
       if (!getTransactionStatus) {
         throw new Error("Transaction invalid or not confirmed!");
       }
 
-      const getTransactionResult = await this.siriusService.getTransactionDetail(transferData.txid);
+      const getTransactionResult = await this.siriusService.getTransactionDetail(transferData.txnInfo.txnHash);
 
       if (!getTransactionResult || !getTransactionResult.status) {
         throw new Error("Get XPX transaction detail failed");
       }
 
+      const {address, hash, value, gasLevel} = getTransactionResult;
 
-      const transactionValue = getTransactionResult.value;
+      if (!isAddress(address)) {
+        console.log(getTransactionResult);
+        console.log(address, !isAddress(address));
+        throw new Error('Invalid ethereum address format');
+      }
 
-      if (!transactionValue) {
+      if (!value) {
         throw new Error("Transaction value is zero or not found");
       }
 
-      if (fundingAccountBalance < transactionValue) {
+      if (fundingAccountBalance < value) {
         throw new Error('Funding account not enough WXPX');
       }
 
       const transferRecord = await this.swapRepository.findOne({
         where: {
-          txid: transferData.txid,
+          txid: hash,
+          status: Status.FULFILLED,
         },
       })
 
@@ -218,9 +224,9 @@ export class SwapController {
       }
 
       const transferResponse = await this.tokenService.transferWxpx(
-        transferData.address,
-        transactionValue,
-        transferData.gasPrice
+        address,
+        value,
+        gasLevel
       );
 
       if (!transferResponse.hash) {
@@ -228,16 +234,16 @@ export class SwapController {
       }
 
       await this.swapRepository.create({
-        txid: transferData.txid,
-        value: transactionValue,
+        txid: hash,
+        value: value,
         from: this.tokenService.getAccountAddress(),
-        to: transferData.address,
+        to: address,
         type: Type.XPX,
         status: Status.FULFILLED,
         fulfillTransaction: transferResponse.hash,
       });
 
-      this.logger.info(`WXPX Sent to: ${transferData.txid} value: ${transactionValue}`);
+      this.logger.info(`WXPX Sent to: ${address} value: ${value}`);
 
       return this.res.status(200).send({
         status: true,
