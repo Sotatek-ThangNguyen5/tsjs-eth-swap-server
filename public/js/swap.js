@@ -730,7 +730,7 @@ $(document).ready(async function () {
 
     const responseData = await response.json();
 
-    alert(JSON.stringify(responseData));
+    alert(JSON.stringify(responseData.data));
     $('.claim-xpx').prop('disabled', false);
   });
 
