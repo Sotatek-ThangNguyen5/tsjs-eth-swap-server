@@ -1,6 +1,6 @@
-import {BytesLike} from '@ethersproject/bytes';
 import {BindingScope, injectable} from '@loopback/core';
 import axios from 'axios';
+import {BytesLike} from 'ethers';
 import {TransactionHttp} from 'tsjs-xpx-chain-sdk';
 
 @injectable({scope: BindingScope.SINGLETON})
@@ -16,22 +16,27 @@ export class SiriusService {
     return response.data;
   }
 
-  async transferXpxtoAddress(to: string, ethTransactionId: BytesLike) {
+  async transferXpxtoAddress(to: string, ethTransactionId: BytesLike, signature: BytesLike) {
     try {
       const data = JSON.stringify({
         siriusRecipient: to,
+        signature,
         txnInfo: {
           network: 'ETH',
           txnHash: ethTransactionId,
         },
       });
-      const response = await axios.post(`${this.url}/transfer-xpx`, data, {
+      const response = await axios.post(`${this.url}/xpx/transfer`, data, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
 
-      if (response.data.status !== 'Success') {
+      if (response.data.status === "Success") {
+        throw new Error("Transaction Claimed");
+      }
+
+      if (!response.data || !response.data.siriusSwapInfo || response.data.siriusSwapInfo.status.status !== 'Success') {
         throw new Error(response.data.status);
       }
 

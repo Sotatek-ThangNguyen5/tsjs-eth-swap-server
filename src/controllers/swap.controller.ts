@@ -22,8 +22,9 @@ import {SiriusService} from '../services/sirius.service';
 
 export interface VerifyMessage {
   address: string;
-  messageSignature: BytesLike;
-  originMessage: string;
+  hash: string;
+  signer: String;
+  signature: BytesLike;
 }
 export interface TransferData {
   txnInfo: TxData;
@@ -104,23 +105,22 @@ export class SwapController {
   @response(200)
   async verifyMessage(
     @requestBody() verifyMessage: VerifyMessage,
-  ): Promise<Response> {
+  ) {
     try {
       const recoveredAddress: string = this.verifierService.verifyMessage(
-        verifyMessage.originMessage,
-        verifyMessage.messageSignature,
+        verifyMessage.address,
+        verifyMessage.signature,
       );
-      const [transactionId, xpxAddress] = verifyMessage.originMessage.split(
-        '|',
-      );
+
+      const transactionId = verifyMessage.hash;
+      const xpxAddress = verifyMessage.address;
+      const signer = verifyMessage.signer;
 
       if (!transactionId || !xpxAddress) {
         throw new Error('Signed Message not valid');
       }
 
-      if (
-        recoveredAddress.toLowerCase() !== verifyMessage.address.toLowerCase()
-      ) {
+      if (recoveredAddress.toLowerCase() !== signer.toLowerCase()) {
         throw new Error('Signer address different from derived address');
       }
 
@@ -137,15 +137,15 @@ export class SwapController {
       }
 
       this.logger.info(`REQUEST::${depositWxpxRecord.from} requested a swap`);
-
       const siriusResponse = await this.siriusService.transferXpxtoAddress(
         xpxAddress,
         depositWxpxRecord.txid,
+        verifyMessage.signature,
       );
 
       this.logger.info(`SIRIUS RESPONSE: ${JSON.stringify(siriusResponse)}`);
       if (!siriusResponse.status) {
-        throw new Error('Received failed, try again later');
+        throw new Error(siriusResponse.error);
       }
 
       const siriusTransferTransaction = siriusResponse.data;
