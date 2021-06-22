@@ -39,8 +39,7 @@ export class SiriusService {
       if (response.data.status === "inProgress") {
         return {
           status: true,
-          data: "Transaction are processing",
-          details: response.data
+          data: response.data
         };
       }
 
