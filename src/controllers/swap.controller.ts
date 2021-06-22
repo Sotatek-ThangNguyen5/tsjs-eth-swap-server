@@ -161,7 +161,7 @@ export class SwapController {
 
       return this.res.status(200).send({
         status: true,
-        data: `${siriusTransferTransaction}`,
+        data: siriusTransferTransaction,
       });
     } catch (error) {
       this.logger.error(`Fatal error:verifyMessage: ${error.message}`);

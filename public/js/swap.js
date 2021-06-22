@@ -729,7 +729,7 @@ $(document).ready(async function () {
     });
 
     const responseData = await response.json();
-    console.log(responseData);
+
     alert(JSON.stringify(responseData));
     $('.claim-xpx').prop('disabled', false);
   });
