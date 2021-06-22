@@ -36,6 +36,14 @@ export class SiriusService {
         throw new Error("Transaction Claimed");
       }
 
+      if (response.data.status === "inProgress") {
+        return {
+          status: true,
+          data: "Transaction are processing",
+          details: response.data
+        };
+      }
+
       if (!response.data || !response.data.siriusSwapInfo || response.data.siriusSwapInfo.status.status !== 'Success') {
         throw new Error(response.data.status);
       }
