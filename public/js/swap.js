@@ -729,8 +729,8 @@ $(document).ready(async function () {
     });
 
     const responseData = await response.json();
-
-    alert(JSON.stringify(responseData.data));
+    console.log(responseData);
+    alert(JSON.stringify(responseData));
     $('.claim-xpx').prop('disabled', false);
   });
 
