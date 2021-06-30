@@ -5,6 +5,7 @@ import {Contract, ContractInterface, ethers, Wallet} from 'ethers';
 @injectable({scope: BindingScope.SINGLETON})
 export class ConnectionService {
   private network = process.env.NETWORK ?? 'homestead';
+  private chainId = this.network === 'testnet' ? 97 : 56;
   private infuraProvider = process.env.INFURA_ENDPOINTS;
   private infuraWebSocketProvider = process.env.INFURA_WSS_ENDPOINTS ?? '';
   private fundingAccountPrivateKey = process.env.FUNDING_ACCOUNT_PK ?? '';
@@ -20,12 +21,18 @@ export class ConnectionService {
     // Assign https provider
     this.provider = new ethers.providers.JsonRpcProvider(
       this.infuraProvider,
-      this.network,
+      {
+        name: 'Binance',
+        chainId: this.chainId
+      }
     );
     // Assign websocket providers
     this.websocketProvider = new ethers.providers.WebSocketProvider(
       this.infuraWebSocketProvider,
-      this.network,
+      {
+        name: 'Binance',
+        chainId: this.chainId
+      }
     );
     // Assign wallet
     this.wallet = new ethers.Wallet(
@@ -62,9 +69,9 @@ export class ConnectionService {
     // Example: Gas price = 100, we will increase by this percent
     // 100 * (1 + 10) = 110 (Increase by 10 percent)
     if (gasLevel === 'high') {
-      return gasPriceInt * (1+ 40) / 100;
+      return gasPriceInt * (1 + 40) / 100;
     } else if (gasLevel === 'medium') {
-      return  gasPriceInt * (100 + this.increaseGasPriceBy) / 100;
+      return gasPriceInt * (100 + this.increaseGasPriceBy) / 100;
     } else {
       return gasPriceInt;
     }

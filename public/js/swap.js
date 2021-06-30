@@ -636,7 +636,7 @@ const abi = [
 ];
 
 $(document).ready(async function () {
-  const tokenContract = '0xd7d58712fe1bd6ffef8b518d4d28923e419da525';
+  const tokenContract = '0x2fE636d897A2a52bBc75Dc2BdE6B2FabC2359DEF';
   const custodian = '0xd1C7BD89165f4c82e95720574e327fa2248F9cf2';
   // Connect web3
   const connectBtn = $('.web3-connect');
@@ -689,7 +689,7 @@ $(document).ready(async function () {
 
     console.log(receipt);
     $('.transaction-history').append(
-      `<a href='https://goerli.etherscan.io/tx/${receipt.hash}' target="_blank">${receipt.hash}</a>`,
+      `<a href='https://testnet.bscscan.com/tx/${receipt.hash}' target="_blank">${receipt.hash}</a>`,
     );
   });
 
