@@ -22,7 +22,7 @@ export class SiriusService {
         siriusRecipient: to,
         signature,
         txnInfo: {
-          network: 'ETH',
+          network: 'BSC',
           txnHash: ethTransactionId,
         },
       });
