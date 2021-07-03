@@ -152,16 +152,16 @@ export class SwapController {
 
       await this.swapRepository.updateById(depositWxpxRecord._id, {
         status: Status.FULFILLED,
-        fulfillTransaction: siriusTransferTransaction.hash,
+        fulfillTransaction: siriusTransferTransaction.ctxId,
       });
 
       this.logger.info(
-        `REQUEST FULFILLED::${depositWxpxRecord.from} by ${siriusTransferTransaction.hash}`,
+        `REQUEST FULFILLED::${depositWxpxRecord.from} by ${siriusTransferTransaction.ctxId}`,
       );
 
       return this.res.status(200).send({
         status: true,
-        data: `${siriusTransferTransaction.hash}`,
+        data: siriusTransferTransaction,
       });
     } catch (error) {
       this.logger.error(`Fatal error:verifyMessage: ${error.message}`);
