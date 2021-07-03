@@ -4,9 +4,8 @@ import {juggler} from '@loopback/repository';
 const config = {
   name: 'db',
   connector: 'mongodb',
-  port: 27017,
-  url:
-    'mongodb+srv://ethserver:ethserver@crow.0inms.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+  port: process.env.MONGO_PORT,
+  url: process.env.MONGO_URL,
   database: process.env.DB_NAME,
   useNewUrlParser: true,
   protocol: 'mongodb+srv',
